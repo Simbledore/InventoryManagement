@@ -23,4 +23,27 @@ router.post('/create', async function (req, res) {
     }
 });
 
+router.get('/byId/:id', async function (req, res) {
+    try {
+        const {id} = req.params;
+        const query = 'SELECT id, amount, name FROM article WHERE id =?;';
+        const rows = await pool.query(query, id);
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(500).json({error: error});
+    }
+})
+
+router.post('/edit/:id', async function (req, res) {
+    try {
+        const {id} = req.params;
+        const name = req.body.name;
+        const query = 'UPDATE article SET name =? WHERE id =?;';
+        await pool.query(query, [name, id]);
+        res.status(204);
+    } catch (error) {
+        res.status(500).json({error: error});
+    }
+})
+
 module.exports = router;
