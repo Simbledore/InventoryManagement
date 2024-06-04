@@ -2,3 +2,19 @@
   text-decoration: none;
   color: white;
 }
+
+.card {
+  background-color: lightgray;
+  margin-bottom: 1%;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  background-color: gray;
+  box-shadow: 24;
+  padding: 1%;
+};

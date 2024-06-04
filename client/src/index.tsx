@@ -4,14 +4,22 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import { Navbar } from './components/Navbar';
+import axios from 'axios';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+axios.defaults.baseURL = 'http://localhost:5000';
+
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Navbar />
+      <div style={{padding: '5%'}}>
+        <App />
+      </div>
     </BrowserRouter>
   </React.StrictMode>
 );
