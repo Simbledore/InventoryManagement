@@ -39,7 +39,7 @@ export function ArticleEdit() {
         <Fragment>
             {article &&
                 <Box display='flex' justifyContent='space-between'>
-                    <Typography variant="h4">{article.name}</Typography>
+                    <Typography variant="h4">{article.name} - Aktuelle Menge: {article.amount}</Typography>
                     <Button onClick={() => setOpen(true)}><EditIcon /></Button>
                 </Box>
             }
