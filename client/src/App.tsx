@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Navbar } from './components/Navbar';
+import { Routes, Route } from 'react-router-dom';
+import { Article } from './components/article/Article';
 
 function App() {
   return (
-    <Navbar />
+    <Fragment>
+      <Routes>
+        <Route path="/article" element={<Article />} />
+      </Routes>
+    </Fragment>
   );
 }
 
