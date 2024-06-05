@@ -17,7 +17,7 @@ router.post('/create', async function (req, res) {
         const {name} = req.body;
         const query = 'INSERT INTO article (name, amount) VALUES (?, 0);';
         await pool.query(query, name);
-        res.status(204);
+        res.status(204).json();
     } catch (error) {
         res.status(500).json({error: error});
     }
@@ -40,7 +40,7 @@ router.post('/edit/:id', async function (req, res) {
         const name = req.body.name;
         const query = 'UPDATE article SET name =? WHERE id =?;';
         await pool.query(query, [name, id]);
-        res.status(204);
+        res.status(204).json();
     } catch (error) {
         res.status(500).json({error: error});
     }
