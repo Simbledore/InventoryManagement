@@ -44,7 +44,7 @@ export function ArticleEdit() {
 
         getBookings()
            .catch(console.error);
-    }, [])
+    }, [open])
 
     return (
         <Fragment>
