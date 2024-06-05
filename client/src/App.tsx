@@ -1,11 +1,9 @@
 import React, { Fragment } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { Navbar } from './components/Navbar';
 import { Routes, Route } from 'react-router-dom';
 import { Article } from './components/article/Article';
 import { ArticleEdit } from './components/article/ArticleEdit';
-import { Bookings } from './components/bookings/Bookings';
+import { Booking } from './components/bookings/Booking';
 
 function App() {
   return (
@@ -13,7 +11,8 @@ function App() {
       <Routes>
         <Route path="/article" element={<Article />} />
         <Route path="/article/edit/:id" element={<ArticleEdit />} />
-        <Route path="/bookings" element={<Bookings />} />
+        <Route path="/bookings" element={<Booking book_in={true}/>} />
+        <Route path="/bookings/out" element={<Booking book_in={false}/>} />
       </Routes>
     </Fragment>
   );

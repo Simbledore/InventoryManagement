@@ -10,6 +10,7 @@ export function Navbar( ){
             <Toolbar>
                 <Link to={'/article'} className="navbar-button"><HomeIcon /></Link>
                 <Link to={'/bookings'} className="navbar-button">Einbuchen</Link>
+                <Link to={'/bookings/out'} className="navbar-button">Ausbuchen</Link>
             </Toolbar>
         </AppBar>
     )
