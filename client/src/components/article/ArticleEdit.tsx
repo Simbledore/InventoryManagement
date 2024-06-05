@@ -5,10 +5,13 @@ import { ArticleForm, ArticleView } from "./article_models";
 import { Box, Button, Card, Modal, TextField, Typography } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import { useForm } from "react-hook-form";
+import { BookingView } from "../bookings/booking.models";
+import { ArticleBookingTable } from "./ArticleBookingTable";
 
 export function ArticleEdit() {
     const hook = useForm<ArticleForm>({})
     const [article, setArticle] = useState<ArticleView | null>(null);
+    const [bookings, setBookings] = useState<BookingView[] | null>(null);
     const [open, setOpen] = useState<boolean>(false);
     let { id } = useParams();
 
@@ -29,10 +32,18 @@ export function ArticleEdit() {
             setArticle(response.data[0]);
         }
 
+        const getBookings = async () => {
+            const response = await axios.get<BookingView[]>('/api/booking/article/' + id);
+            setBookings(response.data);
+        }
+
         // call the function
         getArticle()
             // make sure to catch any error
             .catch(console.error);
+
+        getBookings()
+           .catch(console.error);
     }, [])
 
     return (
@@ -42,6 +53,9 @@ export function ArticleEdit() {
                     <Typography variant="h4">{article.name} - Aktuelle Menge: {article.amount}</Typography>
                     <Button onClick={() => setOpen(true)}><EditIcon /></Button>
                 </Box>
+            }
+            {bookings && 
+                <ArticleBookingTable bookings={bookings}/>
             }
             <Modal open={open} onClose={() => setOpen(false)}>
                 <Card className='modal-content'>

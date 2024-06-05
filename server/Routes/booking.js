@@ -42,7 +42,7 @@ router.get('/bookin/overview', async function (req, res) {
         const rows = await pool.query(query);
         res.status(200).json(rows);
     } catch (error) {
-        
+        res.status(500).json({error: error});
     }
 });
 
@@ -52,7 +52,19 @@ router.get('/bookout/overview', async function (req, res) {
         const rows = await pool.query(query);
         res.status(200).json(rows);
     } catch (error) {
-        
+        res.status(500).json({error: error});
+    }
+});
+
+router.get('/article/:id', async function (req, res) {
+    try {
+        const {id} = req.params;
+        console.log(id);
+        const query = 'SELECT amount, booking_date, book_in FROM booking WHERE article_id = ? ORDER BY booking_date;';
+        const rows = await pool.query(query, [id]);
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(500).json({error: error});
     }
 });
 

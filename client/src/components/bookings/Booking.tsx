@@ -4,6 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { BookingCreate } from "./BookingCreate";
 import axios from "axios";
 import { BookingView } from "./booking.models";
+import { BookingTable } from "./BookingTable";
 
 
 interface Props {
@@ -25,9 +26,7 @@ export function Booking(props: Props) {
             setBookings(response.data);
         }
 
-        // call the function
         getArticles()
-            // make sure to catch any error
             .catch(console.error);
     }, [open, props.book_in])
 
@@ -38,26 +37,7 @@ export function Booking(props: Props) {
                 <Button onClick={() => setOpen(true)}><AddIcon /></Button>
             </Box>
             {bookings &&
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Artikel</TableCell>
-                                <TableCell>Menge</TableCell>
-                                <TableCell>Datum</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {bookings.map(book => (
-                                <TableRow key={book.id}>
-                                    <TableCell>{book.article_name}</TableCell>
-                                    <TableCell>{book.amount}</TableCell>
-                                    <TableCell>{book.booking_date.toString()}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <BookingTable bookings={bookings}/>
             }
             {bookings && bookings.length === 0 &&
                 <Alert severity="info" sx={{ mt: 2 }}>Es wurden noch keine {props.book_in ? 'Einbuchungen' : 'Ausbuchungen'} getätigt</Alert>
