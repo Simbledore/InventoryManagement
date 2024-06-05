@@ -1,6 +1,7 @@
 export interface BookingForm {
     id: number;
     amount: number;
+    book_in: boolean;
 }
 
 export interface BookingView extends BookingForm {
