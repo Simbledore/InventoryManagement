@@ -42,7 +42,7 @@ export function BookingCreate(props: Props) {
             {articles &&
                 <Modal open={props.open} onClose={() => props.setOpen(false)}>
                     <Card className='modal-content'>
-                        <Typography variant='h5' sx={{ mb: 1 }}>Buchung erstellen</Typography>
+                        <Typography variant='h5' sx={{ mb: 1 }}>Einbuchung erstellen</Typography>
                         <form onSubmit={hook.handleSubmit(values => submit(values))}>
                             <InputLabel id="article-select">Artikel</InputLabel>
                             <Select defaultValue={''} labelId="article-select" sx={{ mb: 2 }} label='Artikel' {...hook.register('id')} fullWidth>
