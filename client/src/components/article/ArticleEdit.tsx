@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useForm } from "react-hook-form";
 import { BookingView } from "../bookings/booking.models";
 import { ArticleBookingTable } from "./ArticleBookingTable";
+import { GenericModalButtons } from "../generic/GenericModalButtons";
 
 export function ArticleEdit() {
     const hook = useForm<ArticleForm>({})
@@ -21,7 +22,7 @@ export function ArticleEdit() {
             await axios.post('/api/article/edit/' + id, values)
             setOpen(false);
         } catch (error) {
-            
+
         }
     }
 
@@ -43,28 +44,26 @@ export function ArticleEdit() {
             .catch(console.error);
 
         getBookings()
-           .catch(console.error);
+            .catch(console.error);
     }, [open])
 
     return (
         <Fragment>
             {article &&
-                <Box display='flex' justifyContent='space-between'>
-                    <Typography variant="h4">{article.name} - Aktuelle Menge: {article.amount}</Typography>
-                    <Button onClick={() => setOpen(true)}><EditIcon /></Button>
+                <Box display='flex' justifyContent='space-between' alignItems='flex-start'>
+                    <Typography className='evo-green-text' variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 2 }}>{article.name} - {article.amount} Stück</Typography>
+                    <Button onClick={() => setOpen(true)}><EditIcon className='evo-green-text' /></Button>
                 </Box>
             }
-            {bookings && 
-                <ArticleBookingTable bookings={bookings}/>
+            {bookings &&
+                <ArticleBookingTable bookings={bookings} />
             }
             <Modal open={open} onClose={() => setOpen(false)}>
-                <Card className='modal-content'>
+                <Card sx={{ p: 2 }} className='modal-content'>
+                    <Typography variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 1 }}>Artikel bearbeiten</Typography>
                     <form onSubmit={hook.handleSubmit(values => submit(values))}>
-                        <TextField sx={{ mb: 2 }} label="Name" variant="outlined" {...hook.register('name')} fullWidth />
-                        <Box display='flex' justifyContent='space-between'>
-                            <Button variant="contained" onClick={() => setOpen(false)}>Abbrechen</Button>
-                            <Button variant="contained" type="submit">Speichern</Button>
-                        </Box>
+                        <TextField sx={{ mb: 2 }} InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} label="Name" variant="outlined" {...hook.register('name')} fullWidth />
+                        <GenericModalButtons setOpen={setOpen}/>
                     </form>
                 </Card>
             </Modal>

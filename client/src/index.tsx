@@ -11,15 +11,15 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
+document.body.classList.add('body');
+
 axios.defaults.baseURL = 'http://localhost:5000';
 
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Navbar />
-      <div style={{padding: '5%'}}>
-        <App />
-      </div>
+      <App />
     </BrowserRouter>
   </React.StrictMode>
 );

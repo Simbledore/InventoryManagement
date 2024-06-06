@@ -2,10 +2,9 @@ import { Fragment, useEffect, useState } from "react";
 import { ArticleForm, ArticleView } from "./article_models";
 import axios from "axios";
 import { ArticleCard } from "./ArticleCard";
-import { Box, Button, Card, Modal, TextField } from "@mui/material";
+import { Box, Button, Card, Modal, TextField, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { useForm } from "react-hook-form";
-import { WidthFull } from "@mui/icons-material";
 
 export function Article() {
     const hook = useForm<ArticleForm>({})
@@ -18,7 +17,7 @@ export function Article() {
             const response = await axios.post<ArticleForm>('/api/article/create', values);
         } catch (error) {
             console.log(error);
-        }finally{
+        } finally {
             hook.reset();
             setOpen(false);
             console.log('response');
@@ -40,21 +39,21 @@ export function Article() {
 
     return (
         <Fragment>
-            <Box display='flex' justifyContent='space-between'>
-                <h1>Artikel</h1>
-                <Button onClick={() => setOpen(true)}><AddIcon /></Button>
+            <Box display='flex' justifyContent='space-between' alignItems='flex-start'>
+                <Typography className='evo-green-text' variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 2 }}>Artikel</Typography>
+                <Button onClick={() => setOpen(true)}><AddIcon className='evo-green-text' /></Button>
             </Box>
             {articles && articles.map((article) => (
                 <ArticleCard key={article.id} article={article} />
             ))}
             <Modal open={open} onClose={() => setOpen(false)}>
-                <Card className="modal-content">
-                    <h2>Atrikel hinzufügen</h2>
+                <Card sx={{ p: 2 }} className="modal-content">
+                    <Typography variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 1 }}>Artikel hinzufügen</Typography>
                     <form onSubmit={hook.handleSubmit(values => submit(values))}>
-                        <TextField sx={{ mb: 2 }} label="Name" variant="outlined" {...hook.register('name')} fullWidth />
+                        <TextField sx={{ mb: 2 }} InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} label="Name" variant="outlined" {...hook.register('name')} fullWidth />
                         <Box display='flex' justifyContent='space-between'>
-                            <Button variant="contained" onClick={() => setOpen(false)}>Abbrechen</Button>
-                            <Button variant="contained" type="submit">Speichern</Button>
+                            <Button variant="contained" className='evo-green-background' onClick={() => setOpen(false)}>Abbrechen</Button>
+                            <Button variant="contained" type="submit" className='evo-green-background'>Speichern</Button>
                         </Box>
                     </form>
                 </Card>

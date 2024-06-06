@@ -4,6 +4,7 @@ import { ArticleView } from "../article/article_models";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { BookingForm } from "./booking.models";
+import { GenericModalButtons } from "../generic/GenericModalButtons";
 
 
 interface Props {
@@ -49,20 +50,17 @@ export function BookingCreate(props: Props) {
         <Fragment>
             {articles &&
                 <Modal open={props.open} onClose={() => props.setOpen(false)}>
-                    <Card className='modal-content'>
-                        <Typography variant='h5' sx={{ mb: 1 }}>{props.book_in ? 'Einbuchung erstellen' : 'Ausbuchung erstellen'}</Typography>
+                    <Card sx={{p: 2}} className='modal-content'>
+                        <Typography variant="h2" sx={{fontSize: {xs: '25px', sm: '35px'}, mb: 1}}>{props.book_in ? 'Einbuchung erstellen' : 'Ausbuchung erstellen'}</Typography>
                         <form onSubmit={hook.handleSubmit(values => submit(values))}>
-                            <InputLabel id="article-select">Artikel</InputLabel>
-                            <Select defaultValue={''} labelId="article-select" sx={{ mb: 2 }} label='Artikel' {...hook.register('id')} fullWidth>
+                            <InputLabel style={{color: 'white'}} id="article-select">Artikel</InputLabel>
+                            <Select inputProps={{className: 'custom-input'}} defaultValue={''} labelId="article-select" sx={{ mb: 2 }} label='Artikel' {...hook.register('id')} fullWidth>
                                 {articles.map(article => (
                                     <MenuItem key={article.id} value={article.id}>{article.name}</MenuItem>
                                 ))}
                             </Select>
-                            <TextField sx={{ mb: 2 }} label='Menge' variant='outlined' {...hook.register('amount')} fullWidth />
-                            <Box display='flex' justifyContent='space-between'>
-                                <Button variant="contained" onClick={() => props.setOpen(false)}>Abbrechen</Button>
-                                <Button variant="contained" type="submit">Speichern</Button>
-                            </Box>
+                            <TextField InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Menge' variant='outlined' {...hook.register('amount')} fullWidth />
+                            <GenericModalButtons setOpen={props.setOpen}/>
                         </form>
                         {error &&
                             <Alert severity="warning" sx={{ mt: 2 }}>{error}</Alert>
