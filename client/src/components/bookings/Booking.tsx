@@ -32,9 +32,9 @@ export function Booking(props: Props) {
 
     return (
         <Fragment>
-            <Box display='flex' justifyContent='space-between'>
-                <h1>{props.book_in ? 'Einbuchungsvorgänge' : 'Ausbuchungsvorgänge'}</h1>
-                <Button onClick={() => setOpen(true)}><AddIcon /></Button>
+            <Box display='flex' justifyContent='space-between' alignItems='flex-start'>
+                <Typography className='evo-green-text' variant="h2" sx={{fontSize: {xs: '25px', sm: '35px'}, mb: 2}}>{props.book_in ? 'Einbuchungsvorgänge' : 'Ausbuchungsvorgänge'}</Typography>
+                <Button onClick={() => setOpen(true)}><AddIcon className='evo-green-text'/></Button>
             </Box>
             {bookings &&
                 <BookingTable bookings={bookings}/>

@@ -1,12 +1,40 @@
+.evo-green-text {
+  color: #329999;
+}
+
+.evo-green-background {
+  background-color: #329999 !important;
+}
+
 .navbar-button{
   text-decoration: none;
   color: white;
   margin-right: 2%;
 }
 
+.article-card{
+  background-color: #393939;
+}
+
+.dark-table{
+  background-color: #393939;
+}
+
+.dark-table-cell {
+  color: white !important;	
+}
+
 .card {
   background-color: lightgray;
   margin-bottom: 1%;
+}
+
+.custom-input-label {
+  color: white !important;
+}
+
+.custom-input {
+  color: white !important;
 }
 
 .modal-content {
@@ -15,7 +43,21 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 80%;
-  background-color: gray;
+  background-color: #393939 !important;
   box-shadow: 24;
   padding: 1%;
-};
+  color: white !important;
+}
+
+.navbar{
+  background-color: #277575 !important;
+}
+
+.body{
+  background-color: #1c1c1c;
+  color: white !important;
+}
+
+*{
+  box-sizing: border-box;
+}
