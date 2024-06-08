@@ -1,3 +1,5 @@
+import { ArticleView } from "../article/article_models";
+
 export interface BookingForm {
     id: number;
     amount: number;
@@ -7,4 +9,8 @@ export interface BookingForm {
 export interface BookingView extends BookingForm {
     article_name: string;
     booking_date: Date;
+}
+
+export interface BookingArticleView extends BookingView {
+    article: ArticleView;
 }
