@@ -1,8 +1,8 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { BookingView } from "./booking.models";
+import { BookingArticleView, BookingView } from "./booking.models";
 
 export interface Props {
-    bookings: BookingView[];
+    bookings: BookingArticleView[];
 }
 
 export function BookingTable(props: Props) {
@@ -20,7 +20,7 @@ export function BookingTable(props: Props) {
                 <TableBody>
                     {props.bookings.map(book => (
                         <TableRow key={book.id}>
-                            <TableCell className='dark-table-cell'>{book.article_name}</TableCell>
+                            <TableCell className='dark-table-cell'>{book.article.name}</TableCell>
                             <TableCell className='dark-table-cell'>{book.amount}</TableCell>
                             <TableCell className='dark-table-cell'>
                                 {new Date(book.booking_date).toLocaleDateString()} <br />

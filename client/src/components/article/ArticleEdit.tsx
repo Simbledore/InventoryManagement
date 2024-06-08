@@ -29,8 +29,8 @@ export function ArticleEdit() {
     useEffect(() => {
         // declare the data fetching function
         const getArticle = async () => {
-            const response = await axios.get<ArticleView[]>('/api/article/byId/' + id);
-            setArticle(response.data[0]);
+            const response = await axios.get<ArticleView>('/api/article/byId/' + id);
+            setArticle(response.data);
         }
 
         const getBookings = async () => {

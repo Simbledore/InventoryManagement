@@ -1,14 +1,31 @@
 const express = require('express');
 const pool = require('../database');
+const datasource = require('../src/database/dbconnection');
+const booking = require('../src/database/entities/booking');
+const bookingRepo = datasource.getRepository(booking);
+const article = require('../src/database/entities/article');
+const articleRepo = datasource.getRepository(article);
 const router = express.Router();
 
 router.post('/bookin/create', async function (req, res) {
     try {
         const { id, amount } = req.body;
-        const query = 'INSERT INTO booking(amount, book_in, booking_date, article_id) VALUES (?, true, NOW(), ?)';
-        const articleQuery = 'UPDATE article SET amount = amount + ? WHERE id = ?;';
-        await pool.query(query, [amount, id]);
-        await pool.query(articleQuery, [amount, id]);
+        await datasource.createQueryBuilder()
+            .insert()
+            .into(booking)
+            .values({ 
+                amount: amount,
+                book_in: true,
+                booking_date: new Date(),
+                article: {id: id}
+            })
+            .execute();
+
+        await datasource.createQueryBuilder()
+            .update(article)
+            .set({ amount: () => `amount + ${amount}` })
+            .where({ id: id})
+            .execute();
         res.status(204).json();
     } catch (error) {
         res.status(500).json({error: error});
@@ -18,18 +35,29 @@ router.post('/bookin/create', async function (req, res) {
 router.post('/bookout/create', async function (req, res, end) {
     try {
         const { id, amount } = req.body;
-        const article_query = 'SELECT * FROM article WHERE id = ?;';
-        var article =  await pool.query(article_query, id);
-        if (article[0]['amount'] - amount < 0) {
+        const existing_article = await articleRepo.findOneBy({ id: id});
+
+        if (existing_article.amount - amount < 0) {
+            console.log('to much')
             return res.status(400).json();
         }
 
-        const query = 'INSERT INTO booking(amount, book_in, booking_date, article_id) VALUES (?, false, NOW(),?);';
-        await pool.query(query, [amount, id]);
+        await datasource.createQueryBuilder()
+            .insert()
+            .into(booking)
+            .values({ 
+                amount: amount,
+                book_in: false,
+                booking_date: new Date(),
+                article: {id: id}
+            })
+            .execute();
 
-        const amount_query = 'UPDATE article SET amount = amount - ? WHERE id = ?;';
-        await pool.query(amount_query, [amount, id]);
-
+            await datasource.createQueryBuilder()
+            .update(article)
+            .set({ amount: () => `amount - ${amount}` })
+            .where({ id: id})
+            .execute();
         res.status(204).json();
     } catch (error) {
         res.status(500).json({error: error});
@@ -38,9 +66,15 @@ router.post('/bookout/create', async function (req, res, end) {
 
 router.get('/bookin/overview', async function (req, res) {
     try {
-        const query = 'SELECT a.name as article_name, b.amount, b.booking_date FROM booking b JOIN article a ON b.article_id = a.id WHERE book_in IS true ORDER BY b.booking_date';
-        const rows = await pool.query(query);
-        res.status(200).json(rows);
+        const bookings = await bookingRepo.find({
+            where : {
+                book_in: true
+            },
+            relations: {
+                article: true
+            },
+        });
+        res.status(200).json(bookings);
     } catch (error) {
         res.status(500).json({error: error});
     }
@@ -48,9 +82,15 @@ router.get('/bookin/overview', async function (req, res) {
 
 router.get('/bookout/overview', async function (req, res) {
     try {
-        const query = 'SELECT a.name as article_name, b.amount, b.booking_date FROM booking b JOIN article a ON b.article_id = a.id WHERE book_in IS false ORDER BY b.booking_date';
-        const rows = await pool.query(query);
-        res.status(200).json(rows);
+        const bookings = await bookingRepo.find({
+            where : {
+                book_in: false
+            },
+            relations: {
+                article: true
+            },
+        });
+        res.status(200).json(bookings);
     } catch (error) {
         res.status(500).json({error: error});
     }
@@ -59,10 +99,12 @@ router.get('/bookout/overview', async function (req, res) {
 router.get('/article/:id', async function (req, res) {
     try {
         const {id} = req.params;
-        console.log(id);
-        const query = 'SELECT amount, booking_date, book_in FROM booking WHERE article_id = ? ORDER BY booking_date;';
-        const rows = await pool.query(query, [id]);
-        res.status(200).json(rows);
+        const bookings = await bookingRepo.find({
+            where : {
+                article: {id: id}
+            }
+        })
+        res.status(200).json(bookings);
     } catch (error) {
         res.status(500).json({error: error});
     }

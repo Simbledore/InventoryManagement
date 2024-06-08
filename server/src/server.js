@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const datasource = require('../src/database/dbconnection');
+
+
 const app = express();
 
 app.use(cors());
@@ -11,10 +14,15 @@ app.use(function(req, res, next) {
     next();
   });
 
-const articleRoutes = require('./Routes/article');
-const bookingRoutes = require('./Routes/booking');
+const articleRoutes = require('../Routes/article');
+const bookingRoutes = require('../Routes/booking');
 
 app.use('/api/article', articleRoutes);
 app.use('/api/booking', bookingRoutes);
 
-app.listen(5000, () => console.log('Server started on port 5000'));
+
+datasource.initialize().then(() => {
+  console.log('Connected to database');
+
+  app.listen(5000, () => console.log('Server started on port 5000'));
+})

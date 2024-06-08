@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import { BookingCreate } from "./BookingCreate";
 import axios from "axios";
-import { BookingView } from "./booking.models";
+import { BookingArticleView, BookingView } from "./booking.models";
 import { BookingTable } from "./BookingTable";
 
 
@@ -13,7 +13,7 @@ interface Props {
 
 export function Booking(props: Props) {
     const [open, setOpen] = useState<boolean>(false);
-    const [bookings, setBookings] = useState<BookingView[] | null>(null);
+    const [bookings, setBookings] = useState<BookingArticleView[] | null>(null);
 
     const getUrl = (): string => {
         return '/api/booking/' + (props.book_in ? 'bookin' : 'bookout') + '/overview';
@@ -22,7 +22,7 @@ export function Booking(props: Props) {
     useEffect(() => {
         // declare the data fetching function
         const getArticles = async () => {
-            const response = await axios.get<BookingView[]>(getUrl());
+            const response = await axios.get<BookingArticleView[]>(getUrl());
             setBookings(response.data);
         }
 
