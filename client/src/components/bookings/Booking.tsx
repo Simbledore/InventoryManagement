@@ -19,6 +19,7 @@ export function Booking(props: Props) {
     const [bookings, setBookings] = useState<BookingArticleView[] | null>(null);
     const [page, setPage] = useState<number>(1);
     const [next, setNext] = useState<boolean>(false);
+    const [loadingError, setLoadingError] = useState<string | null>(null);
 
     const getUrl = (): string => {
         return '/api/booking/overview?bookin=' + (props.book_in ? true : false) + '&page=' + page;
@@ -26,14 +27,14 @@ export function Booking(props: Props) {
 
     useEffect(() => {
         // declare the data fetching function
-        const getArticles = async () => {
+        const getBookings = async () => {
             const response = await axios.get<PaginationResult<BookingArticleView[]>>(getUrl());
             setBookings(response.data.data);
             setNext(response.data.next_page);
         }
 
-        getArticles()
-            .catch(console.error);
+        getBookings()
+            .catch(() => setLoadingError('Beim Laden der Buchungen ist ein Fehler aufgetreten, bitte kontaktieren Sie einen Administrator'));
     }, [open, props.book_in, page])
 
     return (
@@ -55,6 +56,9 @@ export function Booking(props: Props) {
             }
             {bookings && bookings.length === 0 &&
                 <Alert severity="info" sx={{ mt: 2 }}>Es wurden noch keine {props.book_in ? 'Einbuchungen' : 'Ausbuchungen'} getätigt</Alert>
+            }
+            {loadingError &&
+                <Alert severity="warning" sx={{ mt: 2 }}>{loadingError}</Alert>
             }
             <BookingCreate book_in={props.book_in} open={open} setOpen={setOpen} />
         </Fragment>

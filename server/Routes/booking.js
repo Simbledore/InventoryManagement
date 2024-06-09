@@ -13,54 +13,53 @@ router.post('/bookin/create', async function (req, res) {
         await datasource.createQueryBuilder()
             .insert()
             .into(booking)
-            .values({ 
+            .values({
                 amount: amount,
                 book_in: true,
                 booking_date: new Date(),
-                article: {id: id}
+                article: { id: id }
             })
             .execute();
 
         await datasource.createQueryBuilder()
             .update(article)
             .set({ amount: () => `amount + ${amount}` })
-            .where({ id: id})
+            .where({ id: id })
             .execute();
         res.status(204).json();
     } catch (error) {
-        res.status(500).json({error: error});
+        res.status(500).json('Beim Anlegen der Buchung ist ein Fehler aufgetrten, bitte Kontaktieren Sie einen Administrator');
     }
 });
 
 router.post('/bookout/create', async function (req, res, end) {
     try {
         const { id, amount } = req.body;
-        const existing_article = await articleRepo.findOneBy({ id: id});
+        const existing_article = await articleRepo.findOneBy({ id: id });
 
         if (existing_article.amount - amount < 0) {
-            console.log('to much')
-            return res.status(400).json();
+            return res.status(400).json('Die angegebende Menge ist zu hoch!');
         }
 
         await datasource.createQueryBuilder()
             .insert()
             .into(booking)
-            .values({ 
+            .values({
                 amount: amount,
                 book_in: false,
                 booking_date: new Date(),
-                article: {id: id}
+                article: { id: id }
             })
             .execute();
 
-            await datasource.createQueryBuilder()
+        await datasource.createQueryBuilder()
             .update(article)
             .set({ amount: () => `amount - ${amount}` })
-            .where({ id: id})
+            .where({ id: id })
             .execute();
         res.status(204).json();
     } catch (error) {
-        res.status(500).json({error: error});
+        res.status(500).json('Beim anlegen der Buchung ist ein Fehler aufgetrten, bitte Kontaktieren Sie einen Administrator');
     }
 });
 
@@ -71,7 +70,7 @@ router.get('/overview', async function (req, res) {
 
         console.log(bookin);
         const [bookings, maxCount] = await bookingRepo.findAndCount({
-            where : {
+            where: {
                 book_in: bookin === 'true' ? true : false
             },
             relations: {
@@ -80,40 +79,40 @@ router.get('/overview', async function (req, res) {
             order: {
                 booking_date: 'DESC',
             },
-            take : 7,
-            skip : (pageInt - 1) * 7 
+            take: 7,
+            skip: (pageInt - 1) * 7
         });
-        
+
         const next = (Math.ceil(maxCount / 7) > pageInt);
 
-        res.status(200).json({data: bookings, next_page: next});
+        res.status(200).json({ data: bookings, next_page: next });
     } catch (error) {
-        res.status(500).json({error: error});
+        res.status(500).json();
     }
 });
 
 router.get('/article/:id', async function (req, res) {
     try {
-        const {id} = req.params;
-        const {page} = req.query;
+        const { id } = req.params;
+        const { page } = req.query;
         const pageInt = parseInt(page);
 
         const [bookings, maxCount] = await bookingRepo.findAndCount({
-            where : {
-                article: {id: id}
+            where: {
+                article: { id: id }
             },
             order: {
                 booking_date: 'DESC'
             },
             take: 7,
-            skip : (pageInt - 1) * 7
+            skip: (pageInt - 1) * 7
         });
         console.log(maxCount);
         const next = (Math.ceil(maxCount / 7) > pageInt);
 
-        res.status(200).json({data: bookings, next_page: next});
+        res.status(200).json({ data: bookings, next_page: next });
     } catch (error) {
-        res.status(500).json({error: error});
+        res.status(500).json();
     }
 });
 

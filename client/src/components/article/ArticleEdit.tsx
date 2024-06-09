@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ArticleForm, ArticleView } from "./article_models";
-import { Box, Button, Card, Modal, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, Modal, TextField, Typography } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import { useForm } from "react-hook-form";
 import { BookingView } from "../bookings/booking.models";
@@ -19,6 +19,8 @@ export function ArticleEdit() {
     const [open, setOpen] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
     const [next, setNext] = useState<boolean>(false);
+    const [loadingError, setLoadingError] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
     let { id } = useParams();
 
 
@@ -26,8 +28,10 @@ export function ArticleEdit() {
         try {
             await axios.post('/api/article/edit/' + id, values)
             setOpen(false);
+            hook.reset();
         } catch (error) {
-
+            const e = (error as AxiosError).response!.data;
+            setError(e as string);
         }
     }
 
@@ -47,10 +51,10 @@ export function ArticleEdit() {
         // call the function
         getArticle()
             // make sure to catch any error
-            .catch(console.error);
+            .catch(() => setLoadingError('Beim Laden des Artikels ist ein Fehler aufgetrten, bitte kontaktieren Sie einen Administrator'));
 
         getBookings()
-            .catch(console.error);
+            .catch(() => setLoadingError('Beim Laden der zugehörigen Buchungen ist ein Fehler aufgetrten, bitte kontaktieren Sie einen Administrator'));
     }, [open, page])
 
     return (
@@ -71,6 +75,9 @@ export function ArticleEdit() {
                     </Box>
                 </Fragment>
             }
+            {loadingError &&
+                <Alert severity="warning" sx={{ mt: 2 }}>{loadingError}</Alert>
+            }
             <Modal open={open} onClose={() => setOpen(false)}>
                 <Card sx={{ p: 2 }} className='modal-content'>
                     <Typography variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 1 }}>Artikel bearbeiten</Typography>
@@ -78,6 +85,9 @@ export function ArticleEdit() {
                         <TextField sx={{ mb: 2 }} InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} label="Name" variant="outlined" {...hook.register('name')} fullWidth />
                         <GenericModalButtons setOpen={setOpen} />
                     </form>
+                    {error &&
+                        <Alert severity="warning" sx={{ mt: 2 }}>{error}</Alert>
+                    }
                 </Card>
             </Modal>
         </Fragment>

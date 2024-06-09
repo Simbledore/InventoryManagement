@@ -1,10 +1,12 @@
 import { Alert, Box, Button, Card, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 import { ArticleView } from "../article/article_models";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { BookingForm } from "./booking.models";
 import { GenericModalButtons } from "../generic/GenericModalButtons";
+import { ServerResult } from "../models/generic.models";
+import { error } from "console";
 
 
 interface Props {
@@ -24,12 +26,13 @@ export function BookingCreate(props: Props) {
 
     const submit = async (values: BookingForm) => {
         try {
-            const response = await axios.post(getUrl(), values);
+            await axios.post(getUrl(), values);
             props.setOpen(false);
             hook.reset();
             setError(null);
         } catch (error) {
-            setError('Die angegebene Menge ist zu hoch')
+            const e = (error as AxiosError).response!.data;
+            setError(e as string);
         }
     }
 
@@ -43,7 +46,7 @@ export function BookingCreate(props: Props) {
         // call the function
         getArticles()
             // make sure to catch any error
-            .catch(console.error);
+            .catch(() => setError('Beim laden der Artikel ist ein Fehler aufgetreten, bitte kontaktieren Sie einen Administrator!'));
     }, [])
 
     return (
