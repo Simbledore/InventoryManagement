@@ -1,8 +1,8 @@
 import { Fragment, useEffect, useState } from "react";
 import { ArticleForm, ArticleView } from "./article_models";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { ArticleCard } from "./ArticleCard";
-import { Box, Button, Card, Modal, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, Modal, TextField, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { useForm } from "react-hook-form";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -13,6 +13,7 @@ import { PaginationResult } from "../models/generic.models";
 export function Article() {
     const hook = useForm<ArticleForm>({})
     const [articles, setArticles] = useState<ArticleView[] | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const [open, setOpen] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
     const [next, setNext] = useState<boolean>(false);
@@ -20,13 +21,13 @@ export function Article() {
 
     const submit = async (values: ArticleForm) => {
         try {
-            const response = await axios.post<ArticleForm>('/api/article/create', values);
-        } catch (error) {
-            console.log(error);
-        } finally {
+            await axios.post('/api/article/create', values);
             hook.reset();
             setOpen(false);
-            console.log('response');
+            setError(null);
+        } catch (error) {
+            const e = (error as AxiosError).response!.data;
+            setError(e as string);
         }
     }
 
@@ -41,7 +42,7 @@ export function Article() {
         // call the function
         getArticles()
             // make sure to catch any error
-            .catch(console.error);
+            .catch(() => setError('Beim laden der Artikel ist ein Fehler aufgetreten, bitte kontaktieren Sie einen Administrator!'));
     }, [open, page])
 
     return (
@@ -68,6 +69,9 @@ export function Article() {
                             <Button variant="contained" type="submit" className='evo-green-background'>Speichern</Button>
                         </Box>
                     </form>
+                    {error &&
+                        <Alert severity="warning" sx={{ mt: 2 }}>{error}</Alert>
+                    }
                 </Card>
             </Modal>
         </Fragment>
