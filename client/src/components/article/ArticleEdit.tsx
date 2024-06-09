@@ -60,7 +60,7 @@ export function ArticleEdit() {
 
         getBookings()
             .catch(() => setLoadingError('Beim Laden der zugehörigen Buchungen ist ein Fehler aufgetrten, bitte kontaktieren Sie einen Administrator'));
-    }, [open, page])
+    }, [open, page, id])
 
     return (
         <Fragment>

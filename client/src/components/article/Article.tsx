@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { ArticleForm, ArticleSearchModel, ArticleView } from "./article_models";
+import { ArticleForm, ArticleView } from "./article_models";
 import axios, { AxiosError } from "axios";
 import { ArticleCard } from "./ArticleCard";
 import { Alert, Box, Button, Card, Modal, TextField, Typography } from "@mui/material";
@@ -100,7 +100,7 @@ export function Article() {
                     }
                 </Card>
             </Modal>
-            <ArticleSearch open={openSearch} setOpen={setOpenSearch} setArticles={setArticles} setNext={setNext} setError={setError} page={page} setSearch={setSearchParam} />
+            <ArticleSearch setPage={setPage} open={openSearch} setOpen={setOpenSearch} setArticles={setArticles} setNext={setNext} setError={setError} page={page} setSearch={setSearchParam} />
         </Fragment>
     )
 }

@@ -1,9 +1,9 @@
-import { Alert, Box, Button, Card, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 import AddIcon from '@mui/icons-material/Add';
 import { BookingCreate } from "./BookingCreate";
 import axios from "axios";
-import { BookingArticleView, BookingView } from "./booking.models";
+import { BookingArticleView } from "./booking.models";
 import { BookingTable } from "./BookingTable";
 import { PaginationResult } from "../models/generic.models";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -20,11 +20,10 @@ export function Booking(props: Props) {
     const [next, setNext] = useState<boolean>(false);
     const [loadingError, setLoadingError] = useState<string | null>(null);
 
-    const getUrl = (): string => {
-        return '/api/booking/overview?bookin=' + (props.book_in ? true : false) + '&page=' + page;
-    }
-
     useEffect(() => {
+        const getUrl = (): string => {
+            return '/api/booking/overview?bookin=' + (props.book_in ? true : false) + '&page=' + page;
+        }
         // declare the data fetching function
         const getBookings = async () => {
             const response = await axios.get<PaginationResult<BookingArticleView[]>>(getUrl());

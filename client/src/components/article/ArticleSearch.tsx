@@ -1,8 +1,6 @@
-import { Modal, Card, Typography, TextField, Box, Button, Alert } from "@mui/material";
+import { Modal, Card, Typography, TextField, Box, Button } from "@mui/material";
 import { ArticleView, ArticleSearchModel } from "./article_models";
 import { useForm } from "react-hook-form";
-import { PaginationResult } from "../models/generic.models";
-import axios from "axios";
 
 interface Props {
     open: boolean;
@@ -11,6 +9,7 @@ interface Props {
     setNext: (next: boolean) => void;
     setError: (error: string) => void;
     setSearch: (search: string) => void;
+    setPage: (page: number) => void;
     page: number;
 }
  
@@ -21,6 +20,7 @@ export function ArticleSearch(props: Props){
         try {
             props.setSearch(values.q);
             props.setOpen(false);
+            props.setPage(1);
         } catch (error) {
             props.setError('Beim Suchen der Artikel ist ein Fehler aufgetreten, bitte kontaktieren Sie einen Administrator');
         }

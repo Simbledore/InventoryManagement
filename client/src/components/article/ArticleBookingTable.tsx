@@ -1,4 +1,4 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import { BookingView } from "../bookings/booking.models";
 
 export interface Props {

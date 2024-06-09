@@ -1,12 +1,10 @@
-import { Alert, Box, Button, Card, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
+import { Alert, Card, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material";
 import { Fragment, useEffect, useState } from "react";
 import { ArticleView } from "../article/article_models";
 import axios, { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { BookingForm } from "./booking.models";
 import { GenericModalButtons } from "../generic/GenericModalButtons";
-import { ServerResult } from "../models/generic.models";
-import { error } from "console";
 
 
 interface Props {
