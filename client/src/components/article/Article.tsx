@@ -5,11 +5,17 @@ import { ArticleCard } from "./ArticleCard";
 import { Box, Button, Card, Modal, TextField, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { useForm } from "react-hook-form";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { PaginationResult } from "../models/generic.models";
+
 
 export function Article() {
     const hook = useForm<ArticleForm>({})
     const [articles, setArticles] = useState<ArticleView[] | null>(null);
     const [open, setOpen] = useState<boolean>(false);
+    const [page, setPage] = useState<number>(1);
+    const [next, setNext] = useState<boolean>(false);
 
 
     const submit = async (values: ArticleForm) => {
@@ -27,15 +33,16 @@ export function Article() {
     useEffect(() => {
         // declare the data fetching function
         const getArticles = async () => {
-            const response = await axios.get<ArticleView[]>('/api/article/overview');
-            setArticles(response.data);
+            const response = await axios.get<PaginationResult<ArticleView[]>>('/api/article/overview?page=' + page);
+            setArticles(response.data.data);
+            setNext(response.data.next_page)
         }
 
         // call the function
         getArticles()
             // make sure to catch any error
             .catch(console.error);
-    }, [open])
+    }, [open, page])
 
     return (
         <Fragment>
@@ -46,6 +53,11 @@ export function Article() {
             {articles && articles.map((article) => (
                 <ArticleCard key={article.id} article={article} />
             ))}
+            <Box display='flex' justifyContent='center' alignItems='center'>
+                <Button disabled={page === 1} onClick={() => setPage(page - 1)} className='pagination-button'><ArrowBackIosIcon className='evo-green-text' /></Button>
+                <Box>{page}</Box>
+                <Button disabled={next === false} onClick={() => setPage(page + 1)} className='pagination-button'><ArrowForwardIosIcon className='evo-green-text' /></Button>
+            </Box>
             <Modal open={open} onClose={() => setOpen(false)}>
                 <Card sx={{ p: 2 }} className="modal-content">
                     <Typography variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 1 }}>Artikel hinzufügen</Typography>

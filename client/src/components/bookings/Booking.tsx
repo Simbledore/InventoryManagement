@@ -5,6 +5,9 @@ import { BookingCreate } from "./BookingCreate";
 import axios from "axios";
 import { BookingArticleView, BookingView } from "./booking.models";
 import { BookingTable } from "./BookingTable";
+import { PaginationResult } from "../models/generic.models";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 
 interface Props {
@@ -14,30 +17,41 @@ interface Props {
 export function Booking(props: Props) {
     const [open, setOpen] = useState<boolean>(false);
     const [bookings, setBookings] = useState<BookingArticleView[] | null>(null);
+    const [page, setPage] = useState<number>(1);
+    const [next, setNext] = useState<boolean>(false);
 
     const getUrl = (): string => {
-        return '/api/booking/' + (props.book_in ? 'bookin' : 'bookout') + '/overview';
+        return '/api/booking/overview?bookin=' + (props.book_in ? true : false) + '&page=' + page;
     }
 
     useEffect(() => {
         // declare the data fetching function
         const getArticles = async () => {
-            const response = await axios.get<BookingArticleView[]>(getUrl());
-            setBookings(response.data);
+            const response = await axios.get<PaginationResult<BookingArticleView[]>>(getUrl());
+            setBookings(response.data.data);
+            setNext(response.data.next_page);
         }
 
         getArticles()
             .catch(console.error);
-    }, [open, props.book_in])
+    }, [open, props.book_in, page])
 
     return (
         <Fragment>
             <Box display='flex' justifyContent='space-between' alignItems='flex-start'>
-                <Typography className='evo-green-text' variant="h2" sx={{fontSize: {xs: '25px', sm: '35px'}, mb: 2}}>{props.book_in ? 'Einbuchungsvorgänge' : 'Ausbuchungsvorgänge'}</Typography>
-                <Button onClick={() => setOpen(true)}><AddIcon className='evo-green-text'/></Button>
+                <Typography className='evo-green-text' variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 2 }}>{props.book_in ? 'Einbuchungsvorgänge' : 'Ausbuchungsvorgänge'}</Typography>
+                <Button onClick={() => setOpen(true)}><AddIcon className='evo-green-text' /></Button>
             </Box>
             {bookings &&
-                <BookingTable bookings={bookings}/>
+                <Fragment>
+                    <BookingTable bookings={bookings} />
+                    <Box display='flex' justifyContent='center' alignItems='center'>
+                        <Button disabled={page === 1} onClick={() => setPage(page - 1)} className='pagination-button'><ArrowBackIosIcon className='evo-green-text' /></Button>
+                        <Box>{page}</Box>
+                        <Button disabled={next === false} onClick={() => setPage(page + 1)} className='pagination-button'><ArrowForwardIosIcon className='evo-green-text' /></Button>
+                    </Box>
+                </Fragment>
+
             }
             {bookings && bookings.length === 0 &&
                 <Alert severity="info" sx={{ mt: 2 }}>Es wurden noch keine {props.book_in ? 'Einbuchungen' : 'Ausbuchungen'} getätigt</Alert>

@@ -18,8 +18,8 @@ export function ArticleCard(props: Props) {
             justifyContent='space-between'
             alignItems='center'>
             <Box>
-                <Typography variant="h2" sx={{ fontSize: { xs: '12px', sm: '20px' }, mb: 1 }}>{props.article.name}</Typography>
-                <Typography sx={{ fontSize: { xs: '10px', sm: '17px' } }}>Menge: <strong>{props.article.amount} St.</strong></Typography>
+                <Typography variant="h2" sx={{ fontSize: { xs: '1rem', sm: '20px' }, mb: 1 }}>{props.article.name}</Typography>
+                <Typography sx={{ fontSize: { xs: '0.875rem', sm: '0.975rem' } }}>Menge: <strong>{props.article.amount} St.</strong></Typography>
             </Box>
             <Button onClick={() => navigate('/article/edit/' + props.article.id)}><ArrowForwardIosIcon className='evo-green-text' /></Button>
         </Box>

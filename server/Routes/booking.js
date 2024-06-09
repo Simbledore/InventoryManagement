@@ -64,33 +64,29 @@ router.post('/bookout/create', async function (req, res, end) {
     }
 });
 
-router.get('/bookin/overview', async function (req, res) {
+router.get('/overview', async function (req, res) {
     try {
-        const bookings = await bookingRepo.find({
-            where : {
-                book_in: true
-            },
-            relations: {
-                article: true
-            },
-        });
-        res.status(200).json(bookings);
-    } catch (error) {
-        res.status(500).json({error: error});
-    }
-});
+        const { bookin, page } = req.query;
+        const pageInt = parseInt(page);
 
-router.get('/bookout/overview', async function (req, res) {
-    try {
-        const bookings = await bookingRepo.find({
+        console.log(bookin);
+        const [bookings, maxCount] = await bookingRepo.findAndCount({
             where : {
-                book_in: false
+                book_in: bookin === 'true' ? true : false
             },
             relations: {
                 article: true
             },
+            order: {
+                booking_date: 'DESC',
+            },
+            take : 7,
+            skip : (pageInt - 1) * 7 
         });
-        res.status(200).json(bookings);
+        
+        const next = (Math.ceil(maxCount / 7) > pageInt);
+
+        res.status(200).json({data: bookings, next_page: next});
     } catch (error) {
         res.status(500).json({error: error});
     }
@@ -99,12 +95,23 @@ router.get('/bookout/overview', async function (req, res) {
 router.get('/article/:id', async function (req, res) {
     try {
         const {id} = req.params;
-        const bookings = await bookingRepo.find({
+        const {page} = req.query;
+        const pageInt = parseInt(page);
+
+        const [bookings, maxCount] = await bookingRepo.findAndCount({
             where : {
                 article: {id: id}
-            }
-        })
-        res.status(200).json(bookings);
+            },
+            order: {
+                booking_date: 'DESC'
+            },
+            take: 7,
+            skip : (pageInt - 1) * 7
+        });
+        console.log(maxCount);
+        const next = (Math.ceil(maxCount / 7) > pageInt);
+
+        res.status(200).json({data: bookings, next_page: next});
     } catch (error) {
         res.status(500).json({error: error});
     }

@@ -36,7 +36,7 @@ export function BookingCreate(props: Props) {
     useEffect(() => {
         // declare the data fetching function
         const getArticles = async () => {
-            const response = await axios.get<ArticleView[]>('/api/article/overview');
+            const response = await axios.get<ArticleView[]>('/api/article/all');
             setArticles(response.data);
         }
 
