@@ -28,7 +28,7 @@ router.post('/bookin/create', async function (req, res) {
             .execute();
         res.status(204).json();
     } catch (error) {
-        res.status(500).json('Beim Anlegen der Buchung ist ein Fehler aufgetrten, bitte Kontaktieren Sie einen Administrator');
+        res.status(500).json('Beim Anlegen der Buchung ist ein Fehler aufgetreten, bitte kontaktieren Sie einen Administrator');
     }
 });
 
@@ -59,7 +59,7 @@ router.post('/bookout/create', async function (req, res, end) {
             .execute();
         res.status(204).json();
     } catch (error) {
-        res.status(500).json('Beim anlegen der Buchung ist ein Fehler aufgetrten, bitte Kontaktieren Sie einen Administrator');
+        res.status(500).json('Beim anlegen der Buchung ist ein Fehler aufgetreten, bitte kontaktieren Sie einen Administrator');
     }
 });
 

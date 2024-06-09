@@ -22,14 +22,18 @@ export function Article() {
     const submit = async (values: ArticleForm) => {
         try {
             await axios.post('/api/article/create', values);
-            hook.reset();
-            setOpen(false);
-            setError(null);
+            handleClose();
         } catch (error) {
             const e = (error as AxiosError).response!.data;
             setError(e as string);
         }
     }
+
+    const handleClose = () => {
+        setOpen(false);
+        setError(null);
+        hook.reset();
+    };
 
     useEffect(() => {
         // declare the data fetching function
@@ -69,7 +73,7 @@ export function Article() {
             {articles && articles.length === 0 &&
                 <Alert severity="info" sx={{ mt: 2 }}>Es wurden noch keine Artikel angelegt</Alert>
             }
-            <Modal open={open} onClose={() => setOpen(false)}>
+            <Modal open={open} onClose={handleClose}>
                 <Card sx={{ p: 2 }} className="modal-content">
                     <Typography variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 1 }}>Artikel hinzufügen</Typography>
                     <form onSubmit={hook.handleSubmit(values => submit(values))}>
