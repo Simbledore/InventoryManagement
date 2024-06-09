@@ -100,7 +100,7 @@ export function Article() {
                     }
                 </Card>
             </Modal>
-            <ArticleSearch open={openSearch} setOpen={setOpenSearch} setArticles={setArticles} setNext={setNext} setError={setError} page={page} setSearch={setSearchParam} />
+            <ArticleSearch setPage={setPage} open={openSearch} setOpen={setOpenSearch} setArticles={setArticles} setNext={setNext} setError={setError} page={page} setSearch={setSearchParam} />
         </Fragment>
     )
 }
