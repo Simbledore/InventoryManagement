@@ -68,12 +68,17 @@ export function ArticleEdit() {
             {bookings &&
                 <Fragment>
                     <ArticleBookingTable bookings={bookings} />
-                    <Box display='flex' justifyContent='center' alignItems='center'>
-                        <Button disabled={page === 1} onClick={() => setPage(page - 1)} className='pagination-button'><ArrowBackIosIcon className='evo-green-text' /></Button>
-                        <Box>{page}</Box>
-                        <Button disabled={next === false} onClick={() => setPage(page + 1)} className='pagination-button'><ArrowForwardIosIcon className='evo-green-text' /></Button>
-                    </Box>
+                    {bookings.length > 0 &&
+                        <Box display='flex' justifyContent='center' alignItems='center'>
+                            <Button disabled={page === 1} onClick={() => setPage(page - 1)} className='pagination-button'><ArrowBackIosIcon className='evo-green-text' /></Button>
+                            <Box>{page}</Box>
+                            <Button disabled={next === false} onClick={() => setPage(page + 1)} className='pagination-button'><ArrowForwardIosIcon className='evo-green-text' /></Button>
+                        </Box>
+                    }
                 </Fragment>
+            }
+            {bookings && bookings.length === 0 &&
+                <Alert severity="info" sx={{ mt: 2 }}>Für diesen Artikel wurden noch keine Buchungen durhcgeführt</Alert>
             }
             {loadingError &&
                 <Alert severity="warning" sx={{ mt: 2 }}>{loadingError}</Alert>

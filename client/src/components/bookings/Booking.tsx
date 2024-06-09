@@ -9,7 +9,6 @@ import { PaginationResult } from "../models/generic.models";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
-
 interface Props {
     book_in: boolean;
 }
@@ -46,11 +45,13 @@ export function Booking(props: Props) {
             {bookings &&
                 <Fragment>
                     <BookingTable bookings={bookings} />
-                    <Box display='flex' justifyContent='center' alignItems='center'>
-                        <Button disabled={page === 1} onClick={() => setPage(page - 1)} className='pagination-button'><ArrowBackIosIcon className='evo-green-text' /></Button>
-                        <Box>{page}</Box>
-                        <Button disabled={next === false} onClick={() => setPage(page + 1)} className='pagination-button'><ArrowForwardIosIcon className='evo-green-text' /></Button>
-                    </Box>
+                    {bookings.length > 0 &&
+                        <Box display='flex' justifyContent='center' alignItems='center'>
+                            <Button disabled={page === 1} onClick={() => setPage(page - 1)} className='pagination-button'><ArrowBackIosIcon className='evo-green-text' /></Button>
+                            <Box>{page}</Box>
+                            <Button disabled={!next} onClick={() => setPage(page + 1)} className='pagination-button'><ArrowForwardIosIcon className='evo-green-text' /></Button>
+                        </Box>
+                    }
                 </Fragment>
 
             }

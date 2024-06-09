@@ -51,14 +51,24 @@ export function Article() {
                 <Typography className='evo-green-text' variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 2 }}>Artikel</Typography>
                 <Button onClick={() => setOpen(true)}><AddIcon className='evo-green-text' /></Button>
             </Box>
-            {articles && articles.map((article) => (
-                <ArticleCard key={article.id} article={article} />
-            ))}
-            <Box display='flex' justifyContent='center' alignItems='center'>
-                <Button disabled={page === 1} onClick={() => setPage(page - 1)} className='pagination-button'><ArrowBackIosIcon className='evo-green-text' /></Button>
-                <Box>{page}</Box>
-                <Button disabled={next === false} onClick={() => setPage(page + 1)} className='pagination-button'><ArrowForwardIosIcon className='evo-green-text' /></Button>
-            </Box>
+            {articles &&
+                <Fragment>
+                    {articles.map((article) => (
+                        <ArticleCard key={article.id} article={article} />
+
+                    ))}
+                    {articles.length > 0 &&
+                        <Box display='flex' justifyContent='center' alignItems='center'>
+                            <Button disabled={page === 1} onClick={() => setPage(page - 1)} className='pagination-button'><ArrowBackIosIcon className='evo-green-text' /></Button>
+                            <Box>{page}</Box>
+                            <Button disabled={!next} onClick={() => setPage(page + 1)} className='pagination-button'><ArrowForwardIosIcon className='evo-green-text' /></Button>
+                        </Box>
+                    }
+                </Fragment>
+            }
+            {articles && articles.length === 0 &&
+                <Alert severity="info" sx={{ mt: 2 }}>Es wurden noch keine Artikel angelegt</Alert>
+            }
             <Modal open={open} onClose={() => setOpen(false)}>
                 <Card sx={{ p: 2 }} className="modal-content">
                     <Typography variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 1 }}>Artikel hinzufügen</Typography>
