@@ -8,7 +8,7 @@ export interface Props {
 export function ArticleBookingTable(props: Props) {
 
     return (
-        <TableContainer className='dark-table' component={Table}>
+        <TableContainer sx={{ mb: 1 }} className='dark-table' component={Table}>
             <Table>
                 <TableHead >
                     <TableRow>

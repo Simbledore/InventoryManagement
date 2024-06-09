@@ -1,4 +1,4 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { BookingArticleView, BookingView } from "./booking.models";
 
 export interface Props {
@@ -8,7 +8,7 @@ export interface Props {
 export function BookingTable(props: Props) {
 
     return (
-        <TableContainer className='dark-table' component={Table}>
+        <TableContainer sx={{ mb: 1 }} className='dark-table' component={Table}>
             <Table>
                 <TableHead>
                     <TableRow>
@@ -18,13 +18,13 @@ export function BookingTable(props: Props) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {props.bookings.map(book => (
-                        <TableRow key={book.id}>
-                            <TableCell className='dark-table-cell'>{book.article.name}</TableCell>
-                            <TableCell className='dark-table-cell'>{book.amount}</TableCell>
+                    {props.bookings.map(booking => (
+                        <TableRow key={booking.id}>
+                            <TableCell sx={{wordWrap: 'break-word'}} className='dark-table-cell'>{booking.article.name}</TableCell>
+                            <TableCell className='dark-table-cell'><p>{booking.amount}</p></TableCell>
                             <TableCell className='dark-table-cell'>
-                                {new Date(book.booking_date).toLocaleDateString()} <br />
-                                {new Date(book.booking_date).toLocaleTimeString()}
+                                {new Date(booking.booking_date).toLocaleDateString()} <br />
+                                {new Date(booking.booking_date).toLocaleTimeString()}
                             </TableCell>
                         </TableRow>
                     ))}

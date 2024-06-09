@@ -8,12 +8,17 @@ import { useForm } from "react-hook-form";
 import { BookingView } from "../bookings/booking.models";
 import { ArticleBookingTable } from "./ArticleBookingTable";
 import { GenericModalButtons } from "../generic/GenericModalButtons";
+import { PaginationResult } from "../models/generic.models";
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 export function ArticleEdit() {
     const hook = useForm<ArticleForm>({})
     const [article, setArticle] = useState<ArticleView | null>(null);
     const [bookings, setBookings] = useState<BookingView[] | null>(null);
     const [open, setOpen] = useState<boolean>(false);
+    const [page, setPage] = useState<number>(1);
+    const [next, setNext] = useState<boolean>(false);
     let { id } = useParams();
 
 
@@ -34,8 +39,9 @@ export function ArticleEdit() {
         }
 
         const getBookings = async () => {
-            const response = await axios.get<BookingView[]>('/api/booking/article/' + id);
-            setBookings(response.data);
+            const response = await axios.get<PaginationResult<BookingView[]>>('/api/booking/article/' + id + '?page=' + page);
+            setBookings(response.data.data);
+            setNext(response.data.next_page);
         }
 
         // call the function
@@ -45,7 +51,7 @@ export function ArticleEdit() {
 
         getBookings()
             .catch(console.error);
-    }, [open])
+    }, [open, page])
 
     return (
         <Fragment>
@@ -56,14 +62,21 @@ export function ArticleEdit() {
                 </Box>
             }
             {bookings &&
-                <ArticleBookingTable bookings={bookings} />
+                <Fragment>
+                    <ArticleBookingTable bookings={bookings} />
+                    <Box display='flex' justifyContent='center' alignItems='center'>
+                        <Button disabled={page === 1} onClick={() => setPage(page - 1)} className='pagination-button'><ArrowBackIosIcon className='evo-green-text' /></Button>
+                        <Box>{page}</Box>
+                        <Button disabled={next === false} onClick={() => setPage(page + 1)} className='pagination-button'><ArrowForwardIosIcon className='evo-green-text' /></Button>
+                    </Box>
+                </Fragment>
             }
             <Modal open={open} onClose={() => setOpen(false)}>
                 <Card sx={{ p: 2 }} className='modal-content'>
                     <Typography variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 1 }}>Artikel bearbeiten</Typography>
                     <form onSubmit={hook.handleSubmit(values => submit(values))}>
                         <TextField sx={{ mb: 2 }} InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} label="Name" variant="outlined" {...hook.register('name')} fullWidth />
-                        <GenericModalButtons setOpen={setOpen}/>
+                        <GenericModalButtons setOpen={setOpen} />
                     </form>
                 </Card>
             </Modal>
