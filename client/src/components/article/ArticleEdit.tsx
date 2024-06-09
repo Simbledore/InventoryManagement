@@ -27,13 +27,18 @@ export function ArticleEdit() {
     const submit = async (values: ArticleForm) => {
         try {
             await axios.post('/api/article/edit/' + id, values)
-            setOpen(false);
-            hook.reset();
+            handleClose();
         } catch (error) {
             const e = (error as AxiosError).response!.data;
             setError(e as string);
         }
     }
+
+    const handleClose = () => {
+        setOpen(false);
+        setError(null);
+        hook.reset();
+    };
 
     useEffect(() => {
         // declare the data fetching function
@@ -83,7 +88,7 @@ export function ArticleEdit() {
             {loadingError &&
                 <Alert severity="warning" sx={{ mt: 2 }}>{loadingError}</Alert>
             }
-            <Modal open={open} onClose={() => setOpen(false)}>
+            <Modal open={open} onClose={handleClose}>
                 <Card sx={{ p: 2 }} className='modal-content'>
                     <Typography variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 1 }}>Artikel bearbeiten</Typography>
                     <form onSubmit={hook.handleSubmit(values => submit(values))}>

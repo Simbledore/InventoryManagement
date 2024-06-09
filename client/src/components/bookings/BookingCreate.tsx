@@ -24,12 +24,16 @@ export function BookingCreate(props: Props) {
         return '/api/booking/' + (props.book_in ? 'bookin' : 'bookout') + '/create';
     }
 
+    const handleClose = () => {
+        props.setOpen(false);
+        setError(null);
+        hook.reset();
+    };
+
     const submit = async (values: BookingForm) => {
         try {
             await axios.post(getUrl(), values);
-            props.setOpen(false);
-            hook.reset();
-            setError(null);
+            handleClose();
         } catch (error) {
             const e = (error as AxiosError).response!.data;
             setError(e as string);
@@ -52,7 +56,7 @@ export function BookingCreate(props: Props) {
     return (
         <Fragment>
             {articles &&
-                <Modal open={props.open} onClose={() => props.setOpen(false)}>
+                <Modal open={props.open} onClose={handleClose}>
                     <Card sx={{p: 2}} className='modal-content'>
                         <Typography variant="h2" sx={{fontSize: {xs: '25px', sm: '35px'}, mb: 1}}>{props.book_in ? 'Einbuchung erstellen' : 'Ausbuchung erstellen'}</Typography>
                         <form onSubmit={hook.handleSubmit(values => submit(values))}>
