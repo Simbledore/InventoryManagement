@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { ArticleView } from "./article_models";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useNavigate } from "react-router-dom";

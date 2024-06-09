@@ -1,5 +1,5 @@
-import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { BookingArticleView, BookingView } from "./booking.models";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { BookingArticleView } from "./booking.models";
 
 export interface Props {
     bookings: BookingArticleView[];
