@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { ArticleForm, ArticleView } from "./article_models";
+import { ArticleForm, ArticleSearchModel, ArticleView } from "./article_models";
 import axios, { AxiosError } from "axios";
 import { ArticleCard } from "./ArticleCard";
 import { Alert, Box, Button, Card, Modal, TextField, Typography } from "@mui/material";
@@ -7,7 +7,9 @@ import AddIcon from '@mui/icons-material/Add';
 import { useForm } from "react-hook-form";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { PaginationResult } from "../models/generic.models";
+import { ArticleSearch } from "./ArticleSearch";
 
 
 export function Article() {
@@ -15,9 +17,10 @@ export function Article() {
     const [articles, setArticles] = useState<ArticleView[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [open, setOpen] = useState<boolean>(false);
+    const [openSearch, setOpenSearch] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
     const [next, setNext] = useState<boolean>(false);
-
+    const [searchParam, setSearchParam] = useState<string>('');
 
     const submit = async (values: ArticleForm) => {
         try {
@@ -36,30 +39,30 @@ export function Article() {
     };
 
     useEffect(() => {
-        // declare the data fetching function
+        
         const getArticles = async () => {
-            const response = await axios.get<PaginationResult<ArticleView[]>>('/api/article/overview?page=' + page);
+            const response = await axios.get<PaginationResult<ArticleView[]>>('/api/article/overview?page=' + page + '&q=' + searchParam);
             setArticles(response.data.data);
-            setNext(response.data.next_page)
+            setNext(response.data.next_page);
         }
 
-        // call the function
         getArticles()
-            // make sure to catch any error
             .catch(() => setError('Beim laden der Artikel ist ein Fehler aufgetreten, bitte kontaktieren Sie einen Administrator!'));
-    }, [open, page])
+    }, [open, page, searchParam]);
 
     return (
         <Fragment>
             <Box display='flex' justifyContent='space-between' alignItems='flex-start'>
                 <Typography className='evo-green-text' variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 2 }}>Artikel</Typography>
-                <Button onClick={() => setOpen(true)}><AddIcon className='evo-green-text' /></Button>
+                <Box>
+                    <Button onClick={() => setOpenSearch(true)}><ManageSearchIcon className='evo-green-text' /></Button>
+                    <Button onClick={() => setOpen(true)}><AddIcon className='evo-green-text' /></Button>
+                </Box>
             </Box>
             {articles &&
                 <Fragment>
                     {articles.map((article) => (
                         <ArticleCard key={article.id} article={article} />
-
                     ))}
                     {articles.length > 0 &&
                         <Box display='flex' justifyContent='center' alignItems='center'>
@@ -71,7 +74,16 @@ export function Article() {
                 </Fragment>
             }
             {articles && articles.length === 0 &&
-                <Alert severity="info" sx={{ mt: 2 }}>Es wurden noch keine Artikel angelegt</Alert>
+                <Fragment>
+                    <Alert severity="info" sx={{ mt: 2 }}>
+                        {searchParam === '' &&
+                            'Es wurden noch keine Artikel angelegt'
+                        }
+                        {searchParam !== '' &&
+                            'Es wurden keine Artikel gefunden'
+                        }
+                    </Alert>
+                </Fragment>
             }
             <Modal open={open} onClose={handleClose}>
                 <Card sx={{ p: 2 }} className="modal-content">
@@ -88,6 +100,7 @@ export function Article() {
                     }
                 </Card>
             </Modal>
+            <ArticleSearch open={openSearch} setOpen={setOpenSearch} setArticles={setArticles} setNext={setNext} setError={setError} page={page} setSearch={setSearchParam} />
         </Fragment>
     )
 }
