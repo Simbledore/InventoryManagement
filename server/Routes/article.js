@@ -21,7 +21,7 @@ router.get('/overview', async function (req, res) {
                 delete_date: null,
             },
             order: {
-                id: 'ASC',
+                name: 'ASC',
             },
             take : 7,
             skip : (pageInt - 1) * 7  
