@@ -64,7 +64,8 @@ export function BookingCreate(props: Props) {
                                     <MenuItem key={article.id} value={article.id}>{article.name}</MenuItem>
                                 ))}
                             </Select>
-                            <TextField InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Menge' variant='outlined' {...hook.register('amount')} fullWidth />
+                            <TextField InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Charge' variant='outlined' {...hook.register('charge')} fullWidth />
+                            <TextField InputProps={{ className: 'custom-input', type: 'number' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Menge' variant='outlined' {...hook.register('amount')} fullWidth />
                             <GenericModalButtons setOpen={props.setOpen}/>
                         </form>
                         {error &&

@@ -18,6 +18,13 @@ module.exports = new EntitySchema({
     booking_date: {
         type: 'datetime',
     },
+    charge: {
+      type: 'varchar',
+      nullable: true,
+    },
+    booking_number: {
+        type: 'int',
+    }
   },
   relations: {
     article: {
