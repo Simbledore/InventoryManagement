@@ -6,3 +6,7 @@ export interface ArticleForm {
     name: string;
     amount: number;
 }
+
+export interface ArticleSearchModel{
+    q: string;
+}

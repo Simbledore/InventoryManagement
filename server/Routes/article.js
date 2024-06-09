@@ -2,13 +2,13 @@ const express = require('express');
 const pool = require('../database');
 const datasource = require('../src/database/dbconnection');
 const article = require('../src/database/entities/article');
-const { Not } = require('typeorm');
+const { Not, Like } = require('typeorm');
 const articleRepo = datasource.getRepository(article);
 const router = express.Router();
 
 router.get('/overview', async function (req, res) {
     try {
-        const { page } = req.query;
+        const { page, q } = req.query;
         const pageInt = parseInt(page);
 
         const [articles, maxCount] = await articleRepo.findAndCount({
@@ -19,6 +19,7 @@ router.get('/overview', async function (req, res) {
             },
             where: {
                 delete_date: null,
+                ...(q && { name: Like(`%${q}%`)})
             },
             order: {
                 name: 'ASC',
@@ -31,6 +32,7 @@ router.get('/overview', async function (req, res) {
 
         res.status(200).json({data: articles, next_page: next});
     } catch (error) {
+        console.log(error)
         res.status(500).json();
     }
 });
