@@ -62,7 +62,7 @@ export function BookingTable(props: Props) {
     };
 
     getRows();
-  }, []);
+  }, [props.bookings]);
 
   const columns: GridColDef<BookingGridView>[] = [
     {
