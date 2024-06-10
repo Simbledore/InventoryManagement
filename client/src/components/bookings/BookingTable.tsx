@@ -117,7 +117,7 @@ export function BookingTable(props: Props) {
     {
       field: "booking_date",
       headerName: "Datum",
-      editable: true,
+      editable: false,
       headerClassName: "super-app-theme--header",
       flex: 0.5,
       filterable: false,
