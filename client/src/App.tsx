@@ -11,7 +11,8 @@ function App() {
     <Fragment>
       <Box sx={{ p: 2 }}>
         <Routes>
-          <Route path="/article" element={<Article key={"article"} />} />
+          <Route path="/" element={<Article />} />
+          <Route path="/article" element={<Article />} />
           <Route path="/article/edit/:id" element={<ArticleEdit />} />
           <Route
             path="/bookings"
