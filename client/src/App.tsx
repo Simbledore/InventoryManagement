@@ -5,6 +5,7 @@ import { Article } from './components/article/Article';
 import { ArticleEdit } from './components/article/ArticleEdit';
 import { Booking } from './components/bookings/Booking';
 import { Box } from '@mui/material';
+import { BookingEdit } from './components/bookings/BookingEdit';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/article/edit/:id" element={<ArticleEdit />} />
           <Route path="/bookings" element={<Booking key={'bookin'} book_in={true} />} />
           <Route path="/bookings/out" element={<Booking key={'bookout'} book_in={false}/>} />
+          <Route path='/bookingview/:id' element={<BookingEdit/>} />
         </Routes>
       </Box>
     </Fragment>
