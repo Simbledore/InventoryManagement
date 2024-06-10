@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Table,
@@ -15,8 +16,10 @@ import {
 } from "./booking.models";
 import { useNavigate } from "react-router-dom";
 import { DataGrid, GridColDef, GridRowParams } from "@mui/x-data-grid";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import SaveIcon from "@mui/icons-material/Save";
+import { useState } from "react";
+import { NoMeals } from "@mui/icons-material";
 
 export interface Props {
   bookings: BookingArticleView[];
@@ -24,6 +27,8 @@ export interface Props {
 }
 
 export function BookingTable(props: Props) {
+  const [error, setError] = useState<string | null>(null);
+
   const submit = async (values: GridRowParams<BookingGridView>) => {
     try {
       await axios.post(
@@ -34,11 +39,13 @@ export function BookingTable(props: Props) {
           book_in: props.book_in,
         }
       );
-    } catch (error) {}
-    console.log(values);
+    } catch (error) {
+      const e = (error as AxiosError).response!.data;
+      setError(e as string);
+    }
   };
 
-  let rows: BookingGridView[] = props.bookings.map((booking) => ({
+  const rows: BookingGridView[] = props.bookings.map((booking) => ({
     id: booking.id,
     amount: booking.amount,
     booking_number: booking.booking_number,
@@ -78,6 +85,9 @@ export function BookingTable(props: Props) {
       filterable: false,
       minWidth: 170,
       resizable: false,
+      type: "number",
+      align: "left",
+      headerAlign: "left",
     },
     {
       field: "charge",
@@ -122,6 +132,7 @@ export function BookingTable(props: Props) {
             backgroundColor: "#329999",
           },
         }}
+        autoHeight
         rows={rows}
         columns={columns}
         initialState={{
@@ -131,9 +142,14 @@ export function BookingTable(props: Props) {
             },
           },
         }}
-        pageSizeOptions={[10]}
+        pageSizeOptions={[5, 10]}
         disableRowSelectionOnClick
       />
+      {error && (
+        <Alert severity="warning" sx={{ mt: 2 }}>
+          {error}
+        </Alert>
+      )}
     </Box>
   );
 }

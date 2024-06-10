@@ -17,25 +17,16 @@ export function Booking(props: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const [bookings, setBookings] = useState<BookingArticleView[] | null>(null);
   const [page, setPage] = useState<number>(1);
-  const [next, setNext] = useState<boolean>(false);
   const [loadingError, setLoadingError] = useState<string | null>(null);
 
   useEffect(() => {
     const getUrl = (): string => {
-      return (
-        "/api/booking/overview?bookin=" +
-        (props.book_in ? true : false) +
-        "&page=" +
-        page
-      );
+      return "/api/booking/overview?bookin=" + (props.book_in ? true : false);
     };
     // declare the data fetching function
     const getBookings = async () => {
-      const response = await axios.get<PaginationResult<BookingArticleView[]>>(
-        getUrl()
-      );
-      setBookings(response.data.data);
-      setNext(response.data.next_page);
+      const response = await axios.get<BookingArticleView[]>(getUrl());
+      setBookings(response.data);
     };
 
     getBookings().catch(() =>
@@ -64,28 +55,7 @@ export function Booking(props: Props) {
         </Button>
       </Box>
       {bookings && bookings.length > 0 && (
-        <Fragment>
-          <BookingTable bookings={bookings} book_in={props.book_in} />
-          {bookings.length > 0 && (
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <Button
-                disabled={page === 1}
-                onClick={() => setPage(page - 1)}
-                className="pagination-button"
-              >
-                <ArrowBackIosIcon className="evo-green-text" />
-              </Button>
-              <Box>{page}</Box>
-              <Button
-                disabled={!next}
-                onClick={() => setPage(page + 1)}
-                className="pagination-button"
-              >
-                <ArrowForwardIosIcon className="evo-green-text" />
-              </Button>
-            </Box>
-          )}
-        </Fragment>
+        <BookingTable bookings={bookings} book_in={props.book_in} />
       )}
       {bookings && bookings.length === 0 && (
         <Alert severity="info" sx={{ mt: 2 }}>

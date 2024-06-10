@@ -1,5 +1,4 @@
 const express = require("express");
-const pool = require("../database");
 const datasource = require("../src/database/dbconnection");
 const booking = require("../src/database/entities/booking");
 const bookingRepo = datasource.getRepository(booking);
@@ -97,9 +96,7 @@ router.get("/overview", async function (req, res) {
   try {
     const { bookin, page } = req.query;
     const pageInt = parseInt(page);
-
-    console.log(bookin);
-    const [bookings, maxCount] = await bookingRepo.findAndCount({
+    const bookings = await bookingRepo.find({
       where: {
         book_in: bookin === "true" ? true : false,
       },
@@ -109,13 +106,9 @@ router.get("/overview", async function (req, res) {
       order: {
         booking_date: "DESC",
       },
-      take: 7,
-      skip: (pageInt - 1) * 7,
     });
 
-    const next = Math.ceil(maxCount / 7) > pageInt;
-
-    res.status(200).json({ data: bookings, next_page: next });
+    res.status(200).json(bookings);
   } catch (error) {
     res.status(500).json();
   }
@@ -159,6 +152,13 @@ router.post("/edit/:id/:article_id", async function (req, res) {
         amount: true,
       },
     });
+
+    if (!book_in) {
+      const article = await articleRepo.findOneBy({ id: article_id });
+      if (article.amount - (amount - wrong_booking.amount) < 0) {
+        return res.status(400).json("Die angegebende Menge ist zu hoch!");
+      }
+    }
 
     await datasource
       .createQueryBuilder()
