@@ -1,25 +1,10 @@
-import {
-  Alert,
-  Box,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
-import {
-  BookingArticleView,
-  BookingForm,
-  BookingGridView,
-} from "./booking.models";
-import { useNavigate } from "react-router-dom";
+import { Alert, Box, Button } from "@mui/material";
+import { BookingArticleView, BookingGridView } from "./booking.models";
 import { DataGrid, GridColDef, GridRowParams } from "@mui/x-data-grid";
 import axios, { AxiosError } from "axios";
 import SaveIcon from "@mui/icons-material/Save";
-import { useState } from "react";
-import { NoMeals } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export interface Props {
   bookings: BookingArticleView[];
@@ -28,6 +13,8 @@ export interface Props {
 
 export function BookingTable(props: Props) {
   const [error, setError] = useState<string | null>(null);
+  const [rows, setRows] = useState<BookingGridView[] | null>(null);
+  const [deleteRefresh, setDeleteRefresh] = useState<boolean>(false);
 
   const submit = async (values: GridRowParams<BookingGridView>) => {
     try {
@@ -45,24 +32,51 @@ export function BookingTable(props: Props) {
     }
   };
 
-  const rows: BookingGridView[] = props.bookings.map((booking) => ({
-    id: booking.id,
-    amount: booking.amount,
-    booking_number: booking.booking_number,
-    charge: booking.charge,
-    article_name: booking.article.name,
-    booking_date: new Date(booking.booking_date).toLocaleString(),
-    article_id: booking.article.id,
-  }));
+  const deleteBooking = async (values: GridRowParams<BookingGridView>) => {
+    try {
+      await axios.post(
+        "/api/booking/delete/" + values.row.id + "/" + values.row.article_id,
+        {
+          amount: values.row.amount,
+          book_in: props.book_in,
+        }
+      );
+      setRows(rows!.filter((row: BookingGridView) => row.id !== values.row.id));
+    } catch (error) {
+      const e = (error as AxiosError).response!.data;
+      setError(e as string);
+    }
+  };
+
+  useEffect(() => {
+    const getRows = async () => {
+      const rows: BookingGridView[] = props.bookings.map((booking) => ({
+        id: booking.id,
+        amount: booking.amount,
+        booking_number: booking.booking_number,
+        charge: booking.charge,
+        article_name: booking.article.name,
+        booking_date: new Date(booking.booking_date).toLocaleString(),
+        article_id: booking.article.id,
+      }));
+      setRows(rows);
+    };
+
+    getRows();
+  }, [deleteRefresh]);
 
   const columns: GridColDef<BookingGridView>[] = [
     {
       field: "id",
       headerName: "ID",
+    },
+    {
+      field: "booking_number",
+      headerName: "BNr",
       headerClassName: "super-app-theme--header",
-      flex: 0.5,
+      flex: 0.3,
       filterable: false,
-      minWidth: 90,
+      minWidth: 80,
       resizable: false,
     },
     {
@@ -112,12 +126,18 @@ export function BookingTable(props: Props) {
     {
       field: "actions",
       type: "actions",
-      width: 100,
+      width: 120,
       headerClassName: "super-app-theme--header",
       resizable: false,
       getActions: (params) => [
-        <Button onClick={async () => await submit(params)}>
+        <Button sx={{ ml: 1 }} onClick={async () => await submit(params)}>
           <SaveIcon sx={{ color: "#329999" }} />
+        </Button>,
+        <Button
+          sx={{ mr: 2 }}
+          onClick={async () => await deleteBooking(params)}
+        >
+          <DeleteIcon sx={{ color: "#329999" }} />
         </Button>,
       ],
     },
@@ -125,26 +145,34 @@ export function BookingTable(props: Props) {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <DataGrid
-        sx={{
-          color: "white",
-          "& .super-app-theme--header": {
-            backgroundColor: "#329999",
-          },
-        }}
-        autoHeight
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 10,
+      {rows && (
+        <DataGrid
+          sx={{
+            color: "white",
+            "& .super-app-theme--header": {
+              backgroundColor: "#329999",
             },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        disableRowSelectionOnClick
-      />
+          }}
+          autoHeight
+          rows={rows}
+          columns={columns}
+          initialState={{
+            columns: {
+              columnVisibilityModel: {
+                charge: props.book_in,
+                id: false,
+              },
+            },
+            pagination: {
+              paginationModel: {
+                pageSize: 10,
+              },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          disableRowSelectionOnClick
+        />
+      )}
       {error && (
         <Alert severity="warning" sx={{ mt: 2 }}>
           {error}

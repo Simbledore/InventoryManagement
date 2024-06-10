@@ -217,4 +217,47 @@ router.get("/:id", async function (req, res) {
     res.status(500).json();
   }
 });
+
+router.post("/delete/:id/:article_id", async function (req, res) {
+  try {
+    const { id, article_id } = req.params;
+    const { amount, book_in } = req.body;
+
+    console.log(id, "  ", amount, "  ", book_in, "  ", article_id);
+
+    const articleEntry = await articleRepo.findOneBy({
+      id: article_id,
+    });
+
+    if (book_in) {
+      if (articleEntry.amount - amount < 0) {
+        return res
+          .status(400)
+          .json(
+            "Die Ausbuchung kann nicht mehr gelöscht werden, bitte Kontaktiere einen Administartor"
+          );
+      }
+    }
+
+    await datasource
+      .createQueryBuilder()
+      .update(article)
+      .set({
+        amount: () => `amount ${book_in ? "-" : "+"} ${amount}`,
+      })
+      .where({ id: article_id })
+      .execute();
+
+    await bookingRepo.delete(id);
+
+    res.status(200).json();
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json(
+        "Beim Löschen der Ausbuchung ist ein Fehler aufgetreten, bitte kontaktiere einen Administrator"
+      );
+  }
+});
 module.exports = router;

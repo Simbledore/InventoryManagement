@@ -40,7 +40,7 @@ router.get("/all", async function (req, res) {
         name: true,
       },
       where: {
-        delete_date: null,
+        delete_date: IsNull(),
       },
       order: {
         name: "ASC",
