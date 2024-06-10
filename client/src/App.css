@@ -6,6 +6,14 @@
   background-color: #329999 !important;
 }
 
+.MuiTablePagination-root {
+  color: white !important;
+}
+
+.MuiTablePagination-root :disabled {
+  color: gray !important;
+}
+
 .navbar-button{
   text-decoration: none;
   color: white;
