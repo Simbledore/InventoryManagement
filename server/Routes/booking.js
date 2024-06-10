@@ -44,7 +44,7 @@ router.post('/bookin/create', async function (req, res) {
 
 router.post('/bookout/create', async function (req, res, end) {
     try {
-        const { id, amount } = req.body;
+        const { id, amount} = req.body;
         const existing_article = await articleRepo.findOneBy({ id: id });
 
         if (existing_article.amount - amount < 0) {

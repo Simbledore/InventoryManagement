@@ -11,7 +11,7 @@ export function BookingEdit() {
     const [loadingError, setLoadingError] = useState<string | null>(null);
     let { id } = useParams();
 
-    const submit = async (values: BookingForm)  => {
+    const submit = async (values: BookingForm) => {
         try {
             await axios.post('/api/booking/edit/' + id + '/' + booking?.article.id, values)
         } catch (error) {
@@ -37,8 +37,10 @@ export function BookingEdit() {
                     <Box sx={{ boxShadow: 4, mb: { xs: 1, sm: 2 }, p: 2, backgroundColor: '#393939', borderRadius: '10px' }}>
                         <form onSubmit={hook.handleSubmit(values => submit(values))}>
                             <TextField defaultValue={booking.article.name} InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Name' variant='outlined' disabled fullWidth />
-                            <TextField defaultValue={booking.charge} InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Charge' variant='outlined' {...hook.register('charge')} fullWidth />
-                            <TextField defaultValue={booking.amount} InputProps={{ className: 'custom-input', type: 'number' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Menge' variant='outlined' {...hook.register('amount')} fullWidth />
+                            {booking.book_in &&
+                                <TextField defaultValue={booking.charge} InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Charge' variant='outlined' {...hook.register('charge')} fullWidth disabled={!booking.book_in} />
+                            }
+                            <TextField defaultValue={booking.amount} InputProps={{ className: 'custom-input', type: 'number' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Menge' variant='outlined' {...hook.register('amount')} fullWidth disabled={!booking.book_in} />
                             <TextField defaultValue={new Date(booking.booking_date).toLocaleString()} InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Menge' variant='outlined' disabled fullWidth />
                             <Button variant="contained" className='evo-green-background' type="submit">Speichern</Button>
                         </form>

@@ -55,18 +55,20 @@ export function BookingCreate(props: Props) {
         <Fragment>
             {articles &&
                 <Modal open={props.open} onClose={handleClose}>
-                    <Card sx={{p: 2}} className='modal-content'>
-                        <Typography variant="h2" sx={{fontSize: {xs: '25px', sm: '35px'}, mb: 1}}>{props.book_in ? 'Einbuchung erstellen' : 'Ausbuchung erstellen'}</Typography>
+                    <Card sx={{ p: 2 }} className='modal-content'>
+                        <Typography variant="h2" sx={{ fontSize: { xs: '25px', sm: '35px' }, mb: 1 }}>{props.book_in ? 'Einbuchung erstellen' : 'Ausbuchung erstellen'}</Typography>
                         <form onSubmit={hook.handleSubmit(values => submit(values))}>
-                            <InputLabel style={{color: 'white'}} id="article-select">Artikel</InputLabel>
-                            <Select inputProps={{className: 'custom-input'}} defaultValue={''} labelId="article-select" sx={{ mb: 2 }} label='Artikel' {...hook.register('id')} fullWidth>
+                            <InputLabel style={{ color: 'white' }} id="article-select">Artikel</InputLabel>
+                            <Select inputProps={{ className: 'custom-input' }} defaultValue={''} labelId="article-select" sx={{ mb: 2 }} label='Artikel' {...hook.register('id')} fullWidth>
                                 {articles.map(article => (
                                     <MenuItem key={article.id} value={article.id}>{article.name}</MenuItem>
                                 ))}
                             </Select>
-                            <TextField InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Charge' variant='outlined' {...hook.register('charge')} fullWidth />
+                            {props.book_in &&
+                                <TextField InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Charge' variant='outlined' {...hook.register('charge')} fullWidth />
+                            }
                             <TextField InputProps={{ className: 'custom-input', type: 'number' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Menge' variant='outlined' {...hook.register('amount')} fullWidth />
-                            <GenericModalButtons setOpen={props.setOpen}/>
+                            <GenericModalButtons setOpen={props.setOpen} />
                         </form>
                         {error &&
                             <Alert severity="warning" sx={{ mt: 2 }}>{error}</Alert>
