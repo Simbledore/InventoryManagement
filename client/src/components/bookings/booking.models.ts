@@ -16,3 +16,13 @@ export interface BookingView extends BookingForm {
 export interface BookingArticleView extends BookingView {
     article: ArticleView;
 }
+
+export interface BookingGridView {
+    id: number;
+    amount: number;
+    charge: string;
+    booking_number: number;
+    article_name: string;
+    booking_date: string;
+    article_id: number;
+}

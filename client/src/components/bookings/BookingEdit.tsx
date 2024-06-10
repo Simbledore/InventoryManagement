@@ -40,7 +40,10 @@ export function BookingEdit() {
                             {booking.book_in &&
                                 <TextField defaultValue={booking.charge} InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Charge' variant='outlined' {...hook.register('charge')} fullWidth disabled={!booking.book_in} />
                             }
-                            <TextField defaultValue={booking.amount} InputProps={{ className: 'custom-input', type: 'number' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Menge' variant='outlined' {...hook.register('amount')} fullWidth disabled={!booking.book_in} />
+                            <TextField 
+                                defaultValue={booking.amount} 
+                                InputProps={{ className: 'custom-input', type: 'number' }} 
+                                InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Menge' variant='outlined' {...hook.register('amount')} fullWidth disabled={!booking.book_in} />
                             <TextField defaultValue={new Date(booking.booking_date).toLocaleString()} InputProps={{ className: 'custom-input' }} InputLabelProps={{ className: 'custom-input-label' }} sx={{ mb: 2 }} label='Menge' variant='outlined' disabled fullWidth />
                             <Button variant="contained" className='evo-green-background' type="submit">Speichern</Button>
                         </form>
