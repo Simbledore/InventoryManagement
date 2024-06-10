@@ -14,7 +14,6 @@ export interface Props {
 export function BookingTable(props: Props) {
   const [error, setError] = useState<string | null>(null);
   const [rows, setRows] = useState<BookingGridView[] | null>(null);
-  const [deleteRefresh, setDeleteRefresh] = useState<boolean>(false);
 
   const submit = async (values: GridRowParams<BookingGridView>) => {
     try {
@@ -63,7 +62,7 @@ export function BookingTable(props: Props) {
     };
 
     getRows();
-  }, [deleteRefresh]);
+  }, []);
 
   const columns: GridColDef<BookingGridView>[] = [
     {
