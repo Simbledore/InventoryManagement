@@ -2,13 +2,28 @@ import { Box, Button, Typography } from "@mui/material";
 import { ArticleView } from "./article.models";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useNavigate } from "react-router-dom";
+import axios, { AxiosError } from "axios";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface Props {
   article: ArticleView;
+  deleteRefresh: boolean;
+  setDeleteRefresh: (value: boolean) => void;
+  setError: (value: string) => void;
 }
 
 export function ArticleCard(props: Props) {
   const navigate = useNavigate();
+
+  const deleteArticle = async () => {
+    try {
+      await axios.delete("/api/article/" + props.article.id);
+      props.setDeleteRefresh(!props.deleteRefresh);
+    } catch (error) {
+      const e = (error as AxiosError).response!.data;
+      props.setError(e as string);
+    }
+  };
 
   return (
     <Box
@@ -36,9 +51,14 @@ export function ArticleCard(props: Props) {
           Menge: <strong>{props.article.amount} St.</strong>
         </Typography>
       </Box>
-      <Button onClick={() => navigate("/article/edit/" + props.article.id)}>
-        <ArrowForwardIosIcon className="evo-green-text" />
-      </Button>
+      <Box>
+        <Button onClick={deleteArticle}>
+          <DeleteIcon className="evo-green-text" />
+        </Button>
+        <Button onClick={() => navigate("/article/edit/" + props.article.id)}>
+          <ArrowForwardIosIcon className="evo-green-text" />
+        </Button>
+      </Box>
     </Box>
   );
 }

@@ -1,7 +1,7 @@
 const express = require("express");
 const datasource = require("../src/database/db_connection");
 const article = require("../src/database/entities/article");
-const { Not, Like } = require("typeorm");
+const { Not, Like, IsNull } = require("typeorm");
 const articleRepo = datasource.getRepository(article);
 const router = express.Router();
 
@@ -11,13 +11,8 @@ router.get("/overview", async function (req, res) {
     const pageInt = parseInt(page);
 
     const [articles, maxCount] = await articleRepo.findAndCount({
-      select: {
-        id: true,
-        amount: true,
-        name: true,
-      },
       where: {
-        delete_date: null,
+        delete_date: IsNull(),
         ...(q && { name: Like(`%${q}%`) }),
       },
       order: {
@@ -130,6 +125,27 @@ router.post("/edit/:id", async function (req, res) {
       .status(500)
       .json(
         "Beim editieren des Artikels ist ein Fehler aufgetreten, bitte kontaktieren Sie einen Administrator"
+      );
+  }
+});
+
+router.delete("/:id", async function (req, res) {
+  try {
+    const { id } = req.params;
+
+    await datasource
+      .createQueryBuilder()
+      .update(article)
+      .set({ delete_date: new Date() })
+      .where({ id: id })
+      .execute();
+
+    res.status(204).json();
+  } catch (error) {
+    res
+      .status(500)
+      .json(
+        "Beim Löschen des Artikels ist ein Fehler aufgetreten, bitte kontaktieren Sie einen Administrator"
       );
   }
 });

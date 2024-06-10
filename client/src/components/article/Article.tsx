@@ -23,11 +23,13 @@ export function Article() {
   const hook = useForm<ArticleForm>({});
   const [articles, setArticles] = useState<ArticleView[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loadingError, setLoadingError] = useState<string | null>(null);
   const [open, setOpen] = useState<boolean>(false);
   const [openSearch, setOpenSearch] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [next, setNext] = useState<boolean>(false);
   const [searchParam, setSearchParam] = useState<string>("");
+  const [deleteRefresh, setDeleteRefresh] = useState<boolean>(false);
 
   const submit = async (values: ArticleForm) => {
     try {
@@ -55,11 +57,11 @@ export function Article() {
     };
 
     getArticles().catch(() =>
-      setError(
+      setLoadingError(
         "Beim laden der Artikel ist ein Fehler aufgetreten, bitte kontaktieren Sie einen Administrator!"
       )
     );
-  }, [open, page, searchParam]);
+  }, [open, page, searchParam, deleteRefresh]);
 
   return (
     <Fragment>
@@ -87,7 +89,13 @@ export function Article() {
       {articles && (
         <Fragment>
           {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard
+              key={article.id}
+              article={article}
+              deleteRefresh={deleteRefresh}
+              setDeleteRefresh={setDeleteRefresh}
+              setError={setLoadingError}
+            />
           ))}
           {articles.length > 0 && (
             <Box display="flex" justifyContent="center" alignItems="center">
@@ -117,6 +125,11 @@ export function Article() {
             {searchParam !== "" && "Es wurden keine Artikel gefunden"}
           </Alert>
         </Fragment>
+      )}
+      {loadingError && (
+        <Alert severity="warning" sx={{ mt: 2 }}>
+          {loadingError}
+        </Alert>
       )}
       <Modal open={open} onClose={handleClose}>
         <Card sx={{ p: 2 }} className="modal-content">
