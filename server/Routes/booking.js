@@ -10,6 +10,10 @@ router.post("/bookin/create", async function (req, res) {
   try {
     const { id, amount, charge } = req.body;
 
+    if (!id || !amount || !charge) {
+      return res.status(400).json("Bitte alle Felder ausfüllen");
+    }
+
     const bookin_count = await bookingRepo.count({
       where: {
         book_in: true,
@@ -52,6 +56,10 @@ router.post("/bookout/create", async function (req, res, end) {
   try {
     const { id, amount } = req.body;
     const existing_article = await articleRepo.findOneBy({ id: id });
+
+    if (!id || !amount) {
+      return res.status(400).json("Bitte alle Felder ausfüllen");
+    }
 
     if (existing_article.amount - amount < 0) {
       return res.status(400).json("Die angegebende Menge ist zu hoch!");
