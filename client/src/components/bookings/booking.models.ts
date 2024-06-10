@@ -1,4 +1,4 @@
-import { ArticleView } from "../article/article_models";
+import { ArticleView } from "../article/article.models";
 
 export interface BookingForm {
     id: number;

@@ -1,5 +1,5 @@
 const express = require("express");
-const datasource = require("../src/database/dbconnection");
+const datasource = require("../src/database/db_connection");
 const article = require("../src/database/entities/article");
 const { Not, Like } = require("typeorm");
 const articleRepo = datasource.getRepository(article);

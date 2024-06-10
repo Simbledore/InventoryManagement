@@ -1,5 +1,5 @@
 const express = require("express");
-const datasource = require("../src/database/dbconnection");
+const datasource = require("../src/database/db_connection");
 const booking = require("../src/database/entities/booking");
 const bookingRepo = datasource.getRepository(booking);
 const article = require("../src/database/entities/article");
