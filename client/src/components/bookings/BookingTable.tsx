@@ -25,6 +25,7 @@ export function BookingTable(props: Props) {
           book_in: props.book_in,
         }
       );
+      setError(null);
     } catch (error) {
       const e = (error as AxiosError).response!.data;
       setError(e as string);
@@ -40,6 +41,7 @@ export function BookingTable(props: Props) {
           book_in: props.book_in,
         }
       );
+      setError(null);
       setRows(rows!.filter((row: BookingGridView) => row.id !== values.row.id));
     } catch (error) {
       const e = (error as AxiosError).response!.data;

@@ -101,6 +101,10 @@ router.post("/edit/:id", async function (req, res) {
     const { id } = req.params;
     const name = req.body.name;
 
+    if (!name) {
+      return res.status(400).json("Bitte geben Sie einen Namen ein");
+    }
+
     const exists = await articleRepo.exists({
       where: {
         name: name,
